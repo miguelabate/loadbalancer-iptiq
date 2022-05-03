@@ -1,3 +1,24 @@
+# Load balancer
+
+The code implements the behaviour of a loadbalancer as per requirements.   
+
+#  Compile and run tests
+To compile and run, you need at least Java 11 and maven installed.
+
+In the command prompt tun:  
+```
+mvn clean package
+```
+
+#  Run main example
+
+There is a main class providing an example of running a load balancer, registering providers and making calls.
+
+To run it, do:
+```
+mvn compile exec:java -Dexec.mainClass="com.iptiq.ExampleLBRoundRobinEnhanced"
+```
+
 # Implementation
 
 There are three classes implementing incremental requirements (steps) from the specifications.  
@@ -9,17 +30,6 @@ Steps 1,2, 3 and 4 are implemented in LoadBalancerRoundRobin.
 Steps 1,2,3,4,5,6,7 and 8 are implemented in LoadBalancerRoundRobinEnhanced.  
 
 So the final implementation would be LoadBalancerRoundRobinEnhanced.  
-
-#  Compile and run tests
-mvn clean package
-
-#  Run
-
-There is a main class providing an example of running a load balancer, registering providers and making calls.
-
-To run it, do:  
-
-mvn compile exec:java -Dexec.mainClass="com.iptiq.ExampleLBRoundRobinEnhanced"
 
 #  Notes
 
