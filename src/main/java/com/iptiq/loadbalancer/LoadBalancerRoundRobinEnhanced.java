@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
  * @param <T>
  */
 @Slf4j
-public class LoadBalancerRoundRobinEnhanced<T> implements LoadBalancer<T>{
+public class LoadBalancerRoundRobinEnhanced<T> implements LoadBalancer<T>, ManualNodeManager {
 
     public static final int HEALTHY_THRESHOLD = 2; //the number of times a provider needs to respond as healthy before it becomes HEALTHY
     private List<Node<T>> registeredProviderNodes;
@@ -52,7 +52,7 @@ public class LoadBalancerRoundRobinEnhanced<T> implements LoadBalancer<T>{
         try {
             if(this.registeredProviderNodes.size()==0){
                 log.warn("There are no providers registered in the load balancer");
-                throw new NoRegisteredProvidersInLoadBalancer("There are no providers registered in the load balancer");
+                throw new NoRegisteredProvidersInLoadBalancerException("There are no providers registered in the load balancer");
             }
             //keep track of the number of visited nodes, fail in case we went a round without available nodes
             Integer visitedNodesCount=0;
@@ -86,11 +86,12 @@ public class LoadBalancerRoundRobinEnhanced<T> implements LoadBalancer<T>{
                 selectedNode.getActiveCallsCount().addAndGet(-1);//decrease the active calls to the provider, do this in here in case there was error
             }
             return responseValue;
-        }catch (NoNodesAvailableException | NoRegisteredProvidersInLoadBalancer e){//this one just re throw
+        }catch (NoNodesAvailableException | NoRegisteredProvidersInLoadBalancerException e){//this one just re throw
+            log.warn("No nodes available when trying to make request", e);
             throw e;
         } catch (Exception e){//in case of any error making the call, throw exception
             log.error("There was an error while calling the provider", e);
-            throw new ErrorCallingProviderInstance("There was an error calling the provider");
+            throw new ErrorCallingProviderInstanceException("There was an error calling the provider");
         }finally {
             if(lockRegisterProvider.isLocked()&&lockRegisterProvider.isHeldByCurrentThread())
                 lockRegisterProvider.unlock();
@@ -98,11 +99,11 @@ public class LoadBalancerRoundRobinEnhanced<T> implements LoadBalancer<T>{
     }
 
     @Override
-    public Integer registerProviderInstance(Provider<T> aProvider) throws UnableToRegisterProviderInstance {
+    public Integer registerProviderInstance(Provider<T> aProvider) throws UnableToRegisterProviderInstanceException {
         lockRegisterProvider.lock();
         try {
             if (this.registeredProviderNodes.size() == maxNumberOfProviders) {
-                throw new UnableToRegisterProviderInstance("Max number of providers registered reached");
+                throw new UnableToRegisterProviderInstanceException("Max number of providers registered reached");
             }
             Node<T> aNode = new Node<T>(aProvider,ProviderStatus.UNHEALTHY,new AtomicInteger(0),new AtomicInteger(0));
 
@@ -123,6 +124,7 @@ public class LoadBalancerRoundRobinEnhanced<T> implements LoadBalancer<T>{
         }
     }
 
+    @Override
     public void excludeProviderInstance(String providerId) throws ProviderNotFoundException {
         lockRegisterProvider.lock();
         try {
@@ -134,6 +136,7 @@ public class LoadBalancerRoundRobinEnhanced<T> implements LoadBalancer<T>{
         }
     }
 
+    @Override
     public void includeProviderInstance(String providerId) throws ProviderNotFoundException {
         lockRegisterProvider.lock();
         try {

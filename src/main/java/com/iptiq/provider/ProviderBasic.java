@@ -1,5 +1,8 @@
 package com.iptiq.provider;
 
+/**
+ * A bsica implementation of a Provider with String data
+ */
 public class ProviderBasic implements Provider<String>{
 
     private String identifier;

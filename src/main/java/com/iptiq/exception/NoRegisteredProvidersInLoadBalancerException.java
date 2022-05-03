@@ -1,9 +1,9 @@
 package com.iptiq.exception;
 
-public class ErrorCallingProviderInstance extends RuntimeException {
+public class NoRegisteredProvidersInLoadBalancerException extends RuntimeException {
 
     private String errorMessage;
-    public ErrorCallingProviderInstance(String message) {
+    public NoRegisteredProvidersInLoadBalancerException(String message) {
         this.errorMessage=message;
     }
 

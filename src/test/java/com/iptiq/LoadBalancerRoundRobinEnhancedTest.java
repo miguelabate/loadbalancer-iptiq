@@ -1,10 +1,8 @@
 package com.iptiq;
 
-import com.iptiq.exception.ErrorCallingProviderInstance;
 import com.iptiq.exception.NoNodesAvailableException;
-import com.iptiq.exception.NoRegisteredProvidersInLoadBalancer;
-import com.iptiq.exception.UnableToRegisterProviderInstance;
-import com.iptiq.loadbalancer.LoadBalancerRoundRobin;
+import com.iptiq.exception.NoRegisteredProvidersInLoadBalancerException;
+import com.iptiq.exception.UnableToRegisterProviderInstanceException;
 import com.iptiq.loadbalancer.LoadBalancerRoundRobinEnhanced;
 import com.iptiq.provider.FailProvider;
 import com.iptiq.provider.ProviderBasic;
@@ -35,7 +33,7 @@ public class LoadBalancerRoundRobinEnhancedTest {
         assertTrue(countLB == 10);
     }
 
-    @Test(expected = UnableToRegisterProviderInstance.class)
+    @Test(expected = UnableToRegisterProviderInstanceException.class)
     public void testRegisterProviders_SingleThread_failAddingMoreThanAccepted()
     {
         //given: a basic provider
@@ -85,7 +83,7 @@ public class LoadBalancerRoundRobinEnhancedTest {
             Thread aThread = (new Thread(() -> {
                 try {
                     loadBalancer.registerProviderInstance(new ProviderBasic("id" + finalI));
-                }catch (UnableToRegisterProviderInstance e){
+                }catch (UnableToRegisterProviderInstanceException e){
                     exceptionCount.addAndGet(1);
                 }
             }));
@@ -168,7 +166,7 @@ public class LoadBalancerRoundRobinEnhancedTest {
         //when: getting the value, we get exception because there are no providers
         try {
             loadBalancer.get();
-        }catch (NoRegisteredProvidersInLoadBalancer e){
+        }catch (NoRegisteredProvidersInLoadBalancerException e){
             assertEquals("There are no providers registered in the load balancer", e.getErrorMessage());
         }
     }

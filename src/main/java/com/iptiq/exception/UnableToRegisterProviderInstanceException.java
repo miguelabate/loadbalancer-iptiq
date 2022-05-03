@@ -1,9 +1,9 @@
 package com.iptiq.exception;
 
-public class NoRegisteredProvidersInLoadBalancer extends RuntimeException {
+public class UnableToRegisterProviderInstanceException extends RuntimeException {
 
     private String errorMessage;
-    public NoRegisteredProvidersInLoadBalancer(String message) {
+    public UnableToRegisterProviderInstanceException(String message) {
         this.errorMessage=message;
     }
 

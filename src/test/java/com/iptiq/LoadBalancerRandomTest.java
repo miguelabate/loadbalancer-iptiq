@@ -1,8 +1,8 @@
 package com.iptiq;
 
-import com.iptiq.exception.ErrorCallingProviderInstance;
-import com.iptiq.exception.NoRegisteredProvidersInLoadBalancer;
-import com.iptiq.exception.UnableToRegisterProviderInstance;
+import com.iptiq.exception.ErrorCallingProviderInstanceException;
+import com.iptiq.exception.NoRegisteredProvidersInLoadBalancerException;
+import com.iptiq.exception.UnableToRegisterProviderInstanceException;
 import com.iptiq.loadbalancer.LoadBalancerRandom;
 import com.iptiq.provider.FailProvider;
 import com.iptiq.provider.ProviderBasic;
@@ -12,7 +12,6 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicReference;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -35,7 +34,7 @@ public class LoadBalancerRandomTest {
         assertEquals(10, (int) countLB);
     }
 
-    @Test(expected = UnableToRegisterProviderInstance.class)
+    @Test(expected = UnableToRegisterProviderInstanceException.class)
     public void testRegisterProviders_SingleThread_failAddingMoreThanAccepted()
     {
         //given: a load balancer
@@ -87,7 +86,7 @@ public class LoadBalancerRandomTest {
             Thread aThread = (new Thread(() -> {
                 try {
                     loadBalancer.registerProviderInstance(new ProviderBasic("id" + finalI));
-                }catch (UnableToRegisterProviderInstance e){
+                }catch (UnableToRegisterProviderInstanceException e){
                     exceptionCount.addAndGet(1);
                 }
             }));
@@ -147,7 +146,7 @@ public class LoadBalancerRandomTest {
         //when-then: getting the value, we get exception because there are no providers
         try {
             loadBalancer.get();
-        }catch (NoRegisteredProvidersInLoadBalancer e){
+        }catch (NoRegisteredProvidersInLoadBalancerException e){
             assertEquals("There are no providers registered in the load balancer", e.getErrorMessage());
         }
     }
@@ -162,7 +161,7 @@ public class LoadBalancerRandomTest {
         //when: getting the value, we get exception because there are no providers
         try {
             loadBalancer.get();
-        }catch (ErrorCallingProviderInstance e){
+        }catch (ErrorCallingProviderInstanceException e){
             assertEquals("There was an error calling the provider", e.getErrorMessage());
         }
     }

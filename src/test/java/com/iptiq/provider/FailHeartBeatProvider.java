@@ -2,7 +2,7 @@ package com.iptiq.provider;
 
 
 /**
- * new class from Provider that fails. Used for test.
+ * new class from Provider that fails the heart beat check. Used for test.
  */
 public class FailHeartBeatProvider extends ProviderBasic{
 

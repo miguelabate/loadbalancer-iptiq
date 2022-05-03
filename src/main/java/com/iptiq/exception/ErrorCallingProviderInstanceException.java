@@ -1,9 +1,9 @@
 package com.iptiq.exception;
 
-public class UnableToRegisterProviderInstance extends RuntimeException {
+public class ErrorCallingProviderInstanceException extends RuntimeException {
 
     private String errorMessage;
-    public UnableToRegisterProviderInstance(String message) {
+    public ErrorCallingProviderInstanceException(String message) {
         this.errorMessage=message;
     }
 

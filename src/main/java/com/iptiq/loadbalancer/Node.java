@@ -15,8 +15,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  *
  * The healthCount is used to count the number of healthy checks before it goes back to OK
  *
- * activeCallsCount is used to count the active parallel calls. Th enode rejects new calls if the max of parallel calls is reached
- * @param <T>
+ * activeCallsCount is used to count the active parallel calls. The node rejects new calls if the max of parallel calls is reached
  */
 @Getter@Setter
 @AllArgsConstructor

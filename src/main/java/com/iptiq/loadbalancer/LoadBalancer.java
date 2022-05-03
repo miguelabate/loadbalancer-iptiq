@@ -1,6 +1,6 @@
 package com.iptiq.loadbalancer;
 
-import com.iptiq.exception.UnableToRegisterProviderInstance;
+import com.iptiq.exception.UnableToRegisterProviderInstanceException;
 import com.iptiq.provider.Provider;
 
 public interface LoadBalancer<T> {
@@ -15,10 +15,12 @@ public interface LoadBalancer<T> {
      * Registers a provider into this load balancer and returns the current count of registered providers
      * @param aProvider
      * @return
-     * @throws UnableToRegisterProviderInstance
      */
-    Integer registerProviderInstance(Provider<T> aProvider) throws UnableToRegisterProviderInstance;
+    Integer registerProviderInstance(Provider<T> aProvider);
 
+    /**
+     * Returns a count of the registerd providers in this loadbalancer
+     */
     Integer getProviderCount();
 
     /**

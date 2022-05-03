@@ -13,7 +13,7 @@ public class LoadBalancerHeartBeatCheckTest {
 
     @Test
     public void testGetValueFromProvider_HeartBeatCheckHalfFail() throws InterruptedException {
-        //given: the load balancer with a heartbeat time period of 1 sec
+        //given: the load balancer with a heartbeat time period of 500 millis
         LoadBalancerRoundRobinEnhanced<String> loadBalancer = new LoadBalancerRoundRobinEnhanced<>(500);
 
         //when: register 10 providers, 5 are unhealthy
@@ -25,10 +25,10 @@ public class LoadBalancerHeartBeatCheckTest {
         }
         Thread.sleep(2000);//wait a bit for the heartbeat to go a round
 
-        //then: no exceptions and the count is correct, the register Provider locking mechanisms works fine
+        //then: no exceptions and the count is correct
         assertTrue(loadBalancer.getProviderCount() == 10);
 
-        //then: provider with id3 is excluded from the round robin
+        //then: the requests go fine for the first 5 providers, the unhealthy ones are ignored
         String value = loadBalancer.get();
         assertEquals(value, "id0");
         value = loadBalancer.get();
